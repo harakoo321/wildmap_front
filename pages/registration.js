@@ -5,13 +5,15 @@ import { Button } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from 'next/router';
 import FileRegister from "@/components/fileRegister";
+import { postImage } from "./api/upload";
 
 export default function Registration() {
     const [name, setName] = useState();
     const [position, setPosition] = useState();
     const [dangerLevel, setDangerLevel] = useState();
     const [periphery, setPeriphery] = useState();
-    const [picture, setPicture] = useState();
+    const [file, setFile] = useState(null);
+    const [imagePath, setImagePath] = useState();
     const [comment, setComment] = useState();
     
     const size = {
@@ -41,7 +43,7 @@ export default function Registration() {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        router.push("/login");
+        //router.push("/login");
 /*
         const res = await fetch("", {
             method: 'POST',
@@ -59,6 +61,10 @@ export default function Registration() {
         } else {
             setError(data.message);
         }*/
+
+        const result = await postImage(file);
+        console.log(result);
+        setImagePath(result);
     };
 
     return (
@@ -73,12 +79,13 @@ export default function Registration() {
                     </div>
                     <div className="form-group">
                         <label>場所:</label>
-                        {//<Map size={size} center={center} zoom={13} />
+                        {// <Map size={size} center={center} zoom={13} />
                         }
                     </div>
                     <div className="form-group">
                         <label>写真:</label>
-                        <FileRegister />
+                        <FileRegister file={file} setFile={setFile}/>
+                        <p>{file?.name}</p>
                     </div>
                     <Button type="submit" variant="contained" endIcon={<EditIcon />}>
                         投稿

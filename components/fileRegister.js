@@ -7,7 +7,7 @@ function ShowImage(props) {
     return props.image != null ? <Image src={props.image} alt="Selected Image" layout="fill" objectFit="contain" /> : <></>;
 }
 
-export default function FileRegister() {
+export default function FileRegister(props) {
     const [image, setImage] = useState(null);
     const filePickerRef = useRef(null);
     const showFolder = () => {
@@ -18,6 +18,7 @@ export default function FileRegister() {
   
     const selectFile = (e) => {
         const file = e.target.files[0];
+        props.setFile(file);
         setImage(window.URL.createObjectURL(file));
         e.target.value = '';
     };
@@ -36,7 +37,10 @@ export default function FileRegister() {
                 hidden
                 />
                 <Button variant="outlined" onClick={showFolder}>ファイルを選択...</Button>
-                <Button color="error" variant="outlined" startIcon={<DeleteIcon />} onClick={() => setImage(null)}>ファイル削除</Button>
+                <Button color="error" variant="outlined" startIcon={<DeleteIcon />} onClick={() => {
+                    setImage(null);
+                    props.setFile(null);
+                }}>ファイル削除</Button>
             </Grid>
         </Stack>
     );
