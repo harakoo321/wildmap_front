@@ -1,20 +1,21 @@
-import { Children, useState } from "react";
+import { useState } from "react";
 import Header from "./header";
 import Map from "../components/map";
-import { Button } from "@mui/material";
+import { Button, Grid, Rating, TextField } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/router';
 import FileRegister from "@/components/fileRegister";
 import { postImage } from "./api/upload";
+import { addContribution } from "./api/addContribution";
 
 export default function Registration() {
-    const [name, setName] = useState();
+    const [name, setName] = useState("");
     const [position, setPosition] = useState();
-    const [dangerLevel, setDangerLevel] = useState();
-    const [periphery, setPeriphery] = useState();
+    const [dangerLevel, setDangerLevel] = useState(0);
     const [file, setFile] = useState(null);
-    const [imagePath, setImagePath] = useState();
-    const [comment, setComment] = useState();
+    const [imagePath, setImagePath] = useState("");
+    const [comment, setComment] = useState("");
     
     const size = {
         width: "100%",
@@ -28,43 +29,19 @@ export default function Registration() {
 
     const router = useRouter();
 
-    const changeHandler = (e) => {
-        const { name, value } = e.target;
-    /*
-        switch (name) {
-          case "email":
-            setEmail(value);
-            break;
-          case "password":
-            setPassword(value);
-            break;
-        }*/
-    }
-
     const submitHandler = async (e) => {
         e.preventDefault();
-        //router.push("/login");
-/*
-        const res = await fetch("", {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        });
-
-        //api側のレスポンスを受け取る
-        const data = await res.json();
-        if (data.created) {
-            router.push("/home");
-        } else {
-            setError(data.message);
-        }*/
-
         const result = await postImage(file);
         console.log(result);
         setImagePath(result);
+
+        const json = {
+            name: name,
+            dangerLevel: dangerLevel,
+            imagePath: imagePath,
+            comment: comment,
+        };
+        await addContribution(json);
     };
 
     return (
@@ -74,23 +51,51 @@ export default function Registration() {
                 <h3 className="my-3">投稿</h3>
                 <form onSubmit={submitHandler}>
                     <div className="form-group">
-                        <label htmlFor="name">生き物の名前:</label>
-                        <input className="form-control" onChange={changeHandler} value={name} type="text" name="name" id="name" />
+                        <label htmlFor="name">生き物の名前：</label>
+                        <input
+                            className="form-control"
+                            onChange={e => {setName(e.target.value)}} 
+                            value={name} 
+                            type="text" 
+                            name="name" 
+                            id="name" />
                     </div>
                     <div className="form-group">
-                        <label>場所:</label>
-                        {// <Map size={size} center={center} zoom={13} />
-                        }
+                        <label>場所：</label>
+                        <Map size={size} center={center} zoom={13} />
                     </div>
                     <div className="form-group">
-                        <label>写真:</label>
+                        <label>危険度：{dangerLevel}</label>
+                        <br/>
+                        <Rating
+                            name="simple-controlled"
+                            size="large"
+                            value={dangerLevel}
+                            onChange={(e, newValue) => {
+                                setDangerLevel(newValue);
+                            }}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>写真：</label>
                         <FileRegister file={file} setFile={setFile}/>
                         <p>{file?.name}</p>
                     </div>
-                    <Button type="submit" variant="contained" endIcon={<EditIcon />}>
-                        投稿
-                    </Button>
-                    
+                    <div className="form-group">
+                        <label htmlFor="outlined-multiline-flexible">コメント：</label>
+                        <br/>
+                        <TextField
+                            id="outlined-multiline-flexible"
+                            minRows={4}
+                            fullWidth
+                            multiline
+                            onChange={(e) => { setComment(e.target.value) }}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <Button type="submit" variant="contained" endIcon={<EditIcon />}>投稿</Button>
+                        <Button color="error" variant="outlined" startIcon={<CloseIcon />} >キャンセル</Button>
+                    </div>
                 </form>
             </div>
         </div>
