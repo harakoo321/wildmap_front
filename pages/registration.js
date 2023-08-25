@@ -14,7 +14,6 @@ export default function Registration() {
     const [position, setPosition] = useState();
     const [dangerLevel, setDangerLevel] = useState(0);
     const [file, setFile] = useState(null);
-    const [imagePath, setImagePath] = useState("");
     const [comment, setComment] = useState("");
     
     const size = {
@@ -33,12 +32,12 @@ export default function Registration() {
         e.preventDefault();
         const result = await postImage(file);
         console.log(result);
-        setImagePath(result);
 
         const json = {
             name: name,
+            position: position,
             dangerLevel: dangerLevel,
-            imagePath: imagePath,
+            imagePath: result,
             comment: comment,
         };
         await addContribution(json);
@@ -62,7 +61,7 @@ export default function Registration() {
                     </div>
                     <div className="form-group">
                         <label>場所：</label>
-                        <Map size={size} center={center} zoom={13} />
+                        <Map size={size} center={center} zoom={13} setPosition={setPosition} />
                     </div>
                     <div className="form-group">
                         <label>危険度：{dangerLevel}</label>

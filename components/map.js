@@ -8,11 +8,28 @@ export default function Map(props) {
   const [maps, setMaps] = useState(null);
   const [marker, setMarker] = useState(null);
 
-  const handleApiLoaded = ({ map, maps }) => {
-    new maps.Marker({
+  const handleApiLoaded = (object) => {
+    setMap(object.map);
+    setMaps(object.maps);
+  };
+
+  const setLatLng = ({ x, y, lat, lng, event }) => {
+    if (marker) {
+      marker.setMap(null);
+    }
+
+    const latLng = {
+      lat,
+      lng,
+    };
+
+    props.setPosition([lat, lng]);
+
+    setMarker(new maps.Marker({
       map,
-      position: props.center,
-    });
+      position: latLng,
+    }));
+    map.panTo(latLng);
   };
 
   return (
@@ -22,19 +39,8 @@ export default function Map(props) {
         defaultCenter={props.center}
         defaultZoom={props.zoom}
         onGoogleApiLoaded={handleApiLoaded}
+        onClick={setLatLng}
       />
     </div>
   );
-
-  /*
-  return (
-    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}>
-      <GoogleMap
-        mapContainerStyle={props.size}
-        center={props.center}
-        zoom={props.zoom}
-      ></GoogleMap>
-    </LoadScript>
-  );
-  */
 };
