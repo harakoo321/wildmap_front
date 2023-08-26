@@ -41,6 +41,7 @@ export default function Registration() {
             comment: comment,
         };
         await addContribution(json);
+        router.push("/");
     };
 
     return (
@@ -92,8 +93,15 @@ export default function Registration() {
                         />
                     </div>
                     <div className="form-group">
-                        <Button type="submit" variant="contained" endIcon={<EditIcon />}>投稿</Button>
-                        <Button color="error" variant="outlined" startIcon={<CloseIcon />} >キャンセル</Button>
+                        <Button type="submit" variant="contained" sx={{ mr: 1 }} endIcon={<EditIcon />}>投稿</Button>
+                        <Button 
+                            color="error" 
+                            variant="outlined" 
+                            startIcon={<CloseIcon />}
+                            onClick={(e) => {
+                                router.push("/");
+                            }}
+                         >キャンセル</Button>
                     </div>
                 </form>
             </div>

@@ -1,6 +1,5 @@
 import React from "react";
 import { useState } from "react";
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import GoogleMapReact from 'google-map-react';
 
 export default function Map(props) {

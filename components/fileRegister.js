@@ -36,7 +36,7 @@ export default function FileRegister(props) {
                 onChange={(e) => selectFile(e)}
                 hidden
                 />
-                <Button variant="outlined" onClick={showFolder}>ファイルを選択...</Button>
+                <Button variant="outlined" sx={{ mr: 1 }} onClick={showFolder}>ファイルを選択...</Button>
                 <Button color="error" variant="outlined" startIcon={<DeleteIcon />} onClick={() => {
                     setImage(null);
                     props.setFile(null);
