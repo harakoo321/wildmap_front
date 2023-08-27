@@ -11,7 +11,7 @@ export default function Signup() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [open, setOpen] = useState(false);
-    const [error, setError] = useState("");
+    const [text, setText] = useState("");
 
     //登録後にログイン画面に移動
     const router = useRouter();
@@ -38,15 +38,17 @@ export default function Signup() {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if(password !== confirmPassword){
+        if(username === "" && password === ""){
+            setText("ユーザー名またはパスワードが入力されていません");
+            setOpen(true)
+        }
+        else if(password !== confirmPassword){
+            setText("パスワードが一致していません");
             setOpen(true);
         }
         else {
             addAccount({id, username, password});
-            router.push({
-                pathname: "/login",
-                query: { id: id }
-            });
+            router.push("/login");
         }
     };
 
@@ -85,7 +87,6 @@ export default function Signup() {
                         <label htmlFor="password">パスワード（再入力）:</label>
                         <input className="form-control" onChange={changeHandler} value={confirmPassword} type="password" name="confirmPassword" id="confirmPassword" />
                     </div>
-                    {error && <div>{error}</div>}
                     <input type="submit" className="btn btn-primary" value="登録" />
                     <div className='text-center'>
                         <Link href="/login">
@@ -97,7 +98,7 @@ export default function Signup() {
                     open={open}
                     autoHideDuration={6000}
                     onClose={handleClose}
-                    message="パスワードが一致していません"
+                    message={text}
                     action={action}
                 />
             </div>

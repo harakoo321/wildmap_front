@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Snackbar, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { getAccount } from './api/getAccount';
-import { query } from 'firebase/firestore';
 
 export default function Login() {
     const [username, setUsername] = useState("");
