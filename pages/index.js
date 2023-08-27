@@ -13,15 +13,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 export default function Home() {
   const router = useRouter();
   const [posData, setPosData] = useState(null);
+  const [center, setCenter] = useState();
 
   const size = {
     width: "100%",
     height: "70vh",
-  };
-
-  const center = {
-      lat: 33.644218,
-      lng: 130.694269,
   };
 
   const StyledFab = styled(Fab)({
@@ -35,47 +31,74 @@ export default function Home() {
 
   useInsertionEffect(() => {
     let data = [];
-    getContribution(center).then(querySnapshot => {
-      querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data().name}`);
-        data.push([{ lat: doc.data().position[0], lng: doc.data().position[1] }, doc.data().name]);
+    if(center != null){
+      getContribution(center).then(querySnapshot => {
+        querySnapshot.forEach((doc) => {
+          console.log(`${doc.id} => ${doc.data().name}`);
+          data.push([{ lat: doc.data().position[0], lng: doc.data().position[1] }, doc.data().name]);
+        });
+        console.log(data);
+        setPosData(data);
+        console.log(posData);
+        console.log(center);
       });
-      console.log(data);
-      setPosData(data);
-      console.log(posData);
-    });
-  }, []);
+    }
+  }, [center]);
 
+  useInsertionEffect(() => {
+    if ('geolocation' in navigator) {
+      // ブラウザが Geolocation API をサポートしている場合
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            setCenter({ lat: latitude, lng: longitude });
+          },
+          (error) => {
+            console.error('Error getting geolocation:', error);
+          }
+        );
+      } else {
+        console.log('Geolocation is not supported by this browser.');
+      }
+      console.log(center);
+  }, [])
+
+  if(center === null){
+    return <p>位置情報を取得中...</p>;
+  }
+  if(posData !== null){
   return (
-    <div>
-      <Header title="WildMap" />
-      <h1 className="bg-primary text-white display-4 text-center">WildMap</h1>
-      <div className='container'>
-        <HomeMap size={size} center={center} zoom={13} setPosition={() => {}} posData={posData} />
-        <br/>
-        <React.Fragment>
-          <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
-            <Toolbar>
-              <IconButton color="inherit" aria-label="open drawer">
-                <MenuIcon />
-              </IconButton>
-              <StyledFab color="secondary" aria-label="add" onClick={(e) => {
-                console.log(posData);
-                router.push("/registration")
-              }}>
-                <AddIcon />
-              </StyledFab>
-              <Box sx={{ flexGrow: 1 }} />
-              <IconButton color="inherit">
-                <SearchIcon />
-              </IconButton>
-              <IconButton color="inherit">
-                <MoreIcon />
-              </IconButton>
-            </Toolbar>
-          </AppBar>
-        </React.Fragment>
+      <div>
+        <Header title="WildMap" />
+        <h1 className="bg-primary text-white display-4 text-center">WildMap</h1>
+        <div className='container'>
+          <HomeMap size={size} center={center} zoom={13} setPosition={() => {}} posData={posData} />
+          <br/>
+          <React.Fragment>
+            <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
+              <Toolbar>
+                <IconButton color="inherit" aria-label="open drawer">
+                  <MenuIcon />
+                </IconButton>
+                <StyledFab color="secondary" aria-label="add" onClick={(e) => {
+                  console.log(posData);
+                  router.push("/registration")
+                }}>
+                  <AddIcon />
+                </StyledFab>
+                <Box sx={{ flexGrow: 1 }} />
+                <IconButton color="inherit">
+                  <SearchIcon />
+                </IconButton>
+                <IconButton color="inherit">
+                  <MoreIcon />
+                </IconButton>
+              </Toolbar>
+            </AppBar>
+          </React.Fragment>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
