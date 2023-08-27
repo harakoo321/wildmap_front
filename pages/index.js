@@ -4,16 +4,18 @@ import { getContribution } from './api/getContribution';
 import { useRouter } from 'next/router';
 import React, { useState, useInsertionEffect } from 'react';
 import { styled } from '@mui/material/styles';
-import { Fab, AppBar, Toolbar, IconButton, Box } from '@mui/material';
+import { Fab, AppBar, Toolbar, IconButton, Box, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
+import Contribution from '@/components/showContribution';
 
 export default function Home() {
   const router = useRouter();
   const [posData, setPosData] = useState(null);
   const [center, setCenter] = useState();
+  const [document_id, setDocument_id] = useState(router.query.document_id);
 
   const size = {
     width: "100%",
@@ -31,6 +33,7 @@ export default function Home() {
 
   useInsertionEffect(() => {
     let data = [];
+    console.log("id: " + document_id);
     if(center != null){
       getContribution(center).then(querySnapshot => {
         querySnapshot.forEach((doc) => {
@@ -76,6 +79,8 @@ export default function Home() {
           <HomeMap size={size} center={center} zoom={13} setPosition={() => {}} posData={posData} />
           <br/>
           <React.Fragment>
+            <Typography variant="h5" gutterBottom component="div" sx={{ p: 2, pb: 0 }}>投稿</Typography>
+            <Contribution document_id={document_id} />
             <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
               <Toolbar>
                 <IconButton color="inherit" aria-label="open drawer">
