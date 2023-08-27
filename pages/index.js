@@ -15,7 +15,6 @@ export default function Home() {
   const router = useRouter();
   const [posData, setPosData] = useState(null);
   const [center, setCenter] = useState();
-  const [document_id, setDocument_id] = useState(router.query.document_id);
 
   const size = {
     width: "100%",
@@ -33,7 +32,6 @@ export default function Home() {
 
   useInsertionEffect(() => {
     let data = [];
-    console.log("id: " + document_id);
     if(center != null){
       getContribution(center).then(querySnapshot => {
         querySnapshot.forEach((doc) => {
@@ -80,7 +78,7 @@ export default function Home() {
           <br/>
           <React.Fragment>
             <Typography variant="h5" gutterBottom component="div" sx={{ p: 2, pb: 0 }}>投稿</Typography>
-            <Contribution document_id={document_id} />
+            <Contribution document_id={router.query.document_id} />
             <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
               <Toolbar>
                 <IconButton color="inherit" aria-label="open drawer">
