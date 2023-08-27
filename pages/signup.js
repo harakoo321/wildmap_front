@@ -2,37 +2,51 @@ import React, { useState } from 'react';
 import Header from './header';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Box, TextField } from '@mui/material';
+import { Snackbar, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { addAccount } from './api/addAccount';
 
 export default function Signup() {
     const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [open, setOpen] = useState(false);
     const [error, setError] = useState("");
 
     //登録後にログイン画面に移動
     const router = useRouter();
+    const id = router.query.id;
+
+    const handleClose = (event, reason) => {
+        setOpen(false);
+    };
+
+    const action = (
+        <React.Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleClose}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
 
     //フォームデータをapi側にリクエストを送る
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        const res = await fetch("", {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                username: username,
-                email: email,
-                password: password
-            })
-        });
-
-        //api側のレスポンスを受け取る
-        const data = await res.json();
-        if (data.created) {
-            router.push("/login");
-        } else {
-            setError(data.message);
+        if(password !== confirmPassword){
+            setOpen(true);
+        }
+        else {
+            addAccount({id, username, password});
+            router.push({
+                pathname: "/login",
+                query: { id: id }
+            });
         }
     };
 
@@ -40,15 +54,15 @@ export default function Signup() {
         const { name, value } = e.target;
     
         switch (name) {
-          case "username":
-            setUsername(value);
-            break;
-          case "email":
-            setEmail(value);
-            break;
-          case "password":
-            setPassword(value);
-            break;
+            case "username":
+                setUsername(value);
+                break;
+            case "password":
+                setPassword(value);
+                break;
+            case "confirmPassword":
+                setConfirmPassword(value);
+                break;
         }
       }
 
@@ -64,12 +78,12 @@ export default function Signup() {
                         <input className="form-control" onChange={changeHandler} value={username} type="text" name="username" id="username" />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="email">メールアドレス:</label>
-                        <input className="form-control" onChange={changeHandler} value={email} type="email" name="email" id="email" />
-                    </div>
-                    <div className="form-group">
                         <label htmlFor="password">パスワード:</label>
                         <input className="form-control" onChange={changeHandler} value={password} type="password" name="password" id="password" />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">パスワード（再入力）:</label>
+                        <input className="form-control" onChange={changeHandler} value={confirmPassword} type="password" name="confirmPassword" id="confirmPassword" />
                     </div>
                     {error && <div>{error}</div>}
                     <input type="submit" className="btn btn-primary" value="登録" />
@@ -79,6 +93,13 @@ export default function Signup() {
                         </Link>
                     </div>
                 </form>
+                <Snackbar
+                    open={open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                    message="パスワードが一致していません"
+                    action={action}
+                />
             </div>
         </div>
   );
