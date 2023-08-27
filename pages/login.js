@@ -2,35 +2,51 @@ import React, { useState } from 'react';
 import Header from './header';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Box, TextField } from '@mui/material';
+import { Snackbar, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { getAccount } from './api/getAccount';
+import { query } from 'firebase/firestore';
 
 export default function Login() {
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [open, setOpen] = useState(false);
     const [error, setError] = useState("");
 
-    //登録後にログイン画面に移動
     const router = useRouter();
+
+    const handleClose = (event, reason) => {
+        setOpen(false);
+    };
+
+    const action = (
+        <React.Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleClose}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
+
 
     //フォームデータをapi側にリクエストを送る
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        const res = await fetch("", {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        });
-
-        //api側のレスポンスを受け取る
-        const data = await res.json();
-        if (data.created) {
-            router.push("/home");
-        } else {
-            setError(data.message);
+        const res = await getAccount({username, password});
+        console.log(res);
+        if(res){
+            router.push({
+                pathname: "/",
+                query: {username: username}
+            });
+        }
+        else {
+            setOpen(true);
         }
     };
 
@@ -38,8 +54,8 @@ export default function Login() {
         const { name, value } = e.target;
     
         switch (name) {
-          case "email":
-            setEmail(value);
+          case "username":
+            setUsername(value);
             break;
           case "password":
             setPassword(value);
@@ -55,8 +71,8 @@ export default function Login() {
                 <h4 className="my-3">ログイン</h4>
                 <form onSubmit={submitHandler}>
                     <div className="form-group">
-                        <label htmlFor="email">メールアドレス:</label>
-                        <input className="form-control" onChange={changeHandler} value={email} type="email" name="email" id="email" />
+                        <label htmlFor="username">ユーザー名:</label>
+                        <input className="form-control" onChange={changeHandler} value={username} type="text" name="username" id="username" />
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">パスワード:</label>
@@ -70,6 +86,13 @@ export default function Login() {
                         </Link>
                     </div>
                 </form>
+                <Snackbar
+                    open={open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                    message="ユーザー名もしくはパスワードが正しくありません"
+                    action={action}
+                />
             </div>
         </div>
   );
