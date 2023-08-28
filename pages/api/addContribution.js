@@ -1,5 +1,5 @@
 import { db } from "@/helpers/firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { GeoPoint } from "firebase/firestore";
 import { geohashForLocation } from "geofire-common";
 
@@ -14,7 +14,8 @@ export const addContribution = async({ id, name, position, dangerLevel, imagePat
             imagePath: imagePath,
             comment: comment,
             geoPoint: new GeoPoint(position[0], position[1]),
-            geoHash: hash
+            geoHash: hash,
+            timestamp: serverTimestamp()
         });
       
         console.log("Document written with ID: ", docRef.id);
