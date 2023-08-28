@@ -24,8 +24,8 @@ export default function Registration() {
     };
 
     const center = {
-        lat: 33.644218,
-        lng: 130.694269,
+        lat: 35.684839,
+        lng: 139.753449,
     };
 
     const router = useRouter();
