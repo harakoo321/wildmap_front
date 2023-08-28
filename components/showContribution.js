@@ -12,17 +12,18 @@ export default function Contribution(props) {
             const snap = await getDoc(docRef);
             console.log(snap.data());
             setDogSnap(snap);
+            props.setCenter({ lat: snap.data().position[0], lng: snap.data().position[1] });
         } catch (e) {
             console.error("Error getting document: ", e);
         }
     }
 
     useEffect(() => {
-        getContents();
+        if(props.document_id != null) getContents();
     }, []);
 
     if(docSnap == null){
-        return <p></p>
+        return <></>
     }
     return (
         <div className="container alert alert-primary h5 text-primary">
@@ -34,7 +35,7 @@ export default function Contribution(props) {
                     <tr><th>写真</th><td>{}</td></tr>
                 </tbody>
             </table>
-            <Image src={docSnap.data().imagePath} width={600} height={600} alt="Image" />
+            <Image src={docSnap.data().imagePath} layout="fill" objectFit="contain" alt="Image" />
         </div>
     )
 }

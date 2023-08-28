@@ -3,10 +3,11 @@ import { addDoc, collection } from "firebase/firestore";
 import { GeoPoint } from "firebase/firestore";
 import { geohashForLocation } from "geofire-common";
 
-export const addContribution = async({ name, position, dangerLevel, imagePath, comment }) => {
+export const addContribution = async({ id, name, position, dangerLevel, imagePath, comment }) => {
     try {
         const hash = geohashForLocation(position);
         const docRef = await addDoc(collection(db, "contribution"), {
+            id: id,
             name: name,
             position: position,
             dangerLevel: dangerLevel,

@@ -12,7 +12,7 @@ export const getAccount = async({username, password}) => {
         console.log(doc.id, " => ", doc.data());
     });
     if(querySnapshot.size == 1) {
-        return true;
+        return querySnapshot.docs[0].data().id;
     }
-    return false;
+    return null;
 }

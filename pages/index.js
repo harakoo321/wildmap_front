@@ -78,7 +78,7 @@ export default function Home() {
           <br/>
           <React.Fragment>
             <Typography variant="h5" gutterBottom component="div" sx={{ p: 2, pb: 0 }}>投稿</Typography>
-            <Contribution document_id={router.query.document_id} />
+            <Contribution document_id={router.query.document_id} setCenter={setCenter} />
             <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
               <Toolbar>
                 <IconButton color="inherit" aria-label="open drawer">

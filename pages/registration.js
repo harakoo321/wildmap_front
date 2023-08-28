@@ -8,6 +8,8 @@ import { useRouter } from 'next/router';
 import FileRegister from "@/components/fileRegister";
 import { postImage } from "./api/upload";
 import { addContribution } from "./api/addContribution";
+import Auth from "@/components/auth";
+import Cookies from "js-cookie";
 
 export default function Registration() {
     const [name, setName] = useState("");
@@ -32,8 +34,10 @@ export default function Registration() {
         e.preventDefault();
         const result = await postImage(file);
         console.log(result);
+        const id = Cookies.get("signedInID");
 
         const json = {
+            id: id,
             name: name,
             position: position,
             dangerLevel: dangerLevel,
@@ -45,66 +49,68 @@ export default function Registration() {
     };
 
     return (
-        <div>
-            <Header title="Registration" />
-            <div className="container">
-                <h3 className="my-3">投稿</h3>
-                <form onSubmit={submitHandler}>
-                    <div className="form-group">
-                        <label htmlFor="name">生き物の名前：</label>
-                        <input
-                            className="form-control"
-                            onChange={e => {setName(e.target.value)}} 
-                            value={name} 
-                            type="text" 
-                            name="name" 
-                            id="name" />
-                    </div>
-                    <div className="form-group">
-                        <label>場所：</label>
-                        <Map size={size} center={center} zoom={13} setPosition={setPosition} />
-                    </div>
-                    <div className="form-group">
-                        <label>危険度：{dangerLevel}</label>
-                        <br/>
-                        <Rating
-                            name="simple-controlled"
-                            size="large"
-                            value={dangerLevel}
-                            onChange={(e, newValue) => {
-                                setDangerLevel(newValue);
-                            }}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>写真：</label>
-                        <FileRegister file={file} setFile={setFile}/>
-                        <p>{file?.name}</p>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="outlined-multiline-flexible">コメント：</label>
-                        <br/>
-                        <TextField
-                            id="outlined-multiline-flexible"
-                            minRows={4}
-                            fullWidth
-                            multiline
-                            onChange={(e) => { setComment(e.target.value) }}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <Button type="submit" variant="contained" sx={{ mr: 1 }} endIcon={<EditIcon />}>投稿</Button>
-                        <Button 
-                            color="error" 
-                            variant="outlined" 
-                            startIcon={<CloseIcon />}
-                            onClick={(e) => {
-                                router.push("/");
-                            }}
-                         >キャンセル</Button>
-                    </div>
-                </form>
+        <Auth>
+            <div>
+                <Header title="Registration" />
+                <div className="container">
+                    <h3 className="my-3">投稿</h3>
+                    <form onSubmit={submitHandler}>
+                        <div className="form-group">
+                            <label htmlFor="name">生き物の名前：</label>
+                            <input
+                                className="form-control"
+                                onChange={e => {setName(e.target.value)}} 
+                                value={name} 
+                                type="text" 
+                                name="name" 
+                                id="name" />
+                        </div>
+                        <div className="form-group">
+                            <label>場所：</label>
+                            <Map size={size} center={center} zoom={13} setPosition={setPosition} />
+                        </div>
+                        <div className="form-group">
+                            <label>危険度：{dangerLevel}</label>
+                            <br/>
+                            <Rating
+                                name="simple-controlled"
+                                size="large"
+                                value={dangerLevel}
+                                onChange={(e, newValue) => {
+                                    setDangerLevel(newValue);
+                                }}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>写真：</label>
+                            <FileRegister file={file} setFile={setFile}/>
+                            <p>{file?.name}</p>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="outlined-multiline-flexible">コメント：</label>
+                            <br/>
+                            <TextField
+                                id="outlined-multiline-flexible"
+                                minRows={4}
+                                fullWidth
+                                multiline
+                                onChange={(e) => { setComment(e.target.value) }}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <Button type="submit" variant="contained" sx={{ mr: 1 }} endIcon={<EditIcon />}>投稿</Button>
+                            <Button 
+                                color="error" 
+                                variant="outlined" 
+                                startIcon={<CloseIcon />}
+                                onClick={(e) => {
+                                    router.push("/");
+                                }}
+                            >キャンセル</Button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        </Auth>
     );
 }

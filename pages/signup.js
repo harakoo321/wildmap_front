@@ -68,6 +68,7 @@ export default function Signup() {
         }
       }
 
+    if(id == null) return <p>LINEの友達追加後、登録ボタンをクリックして返信されたURLより登録を行ってください</p>
     return (
         <div>
             <Header title="Sign up" />

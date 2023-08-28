@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Snackbar, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { getAccount } from './api/getAccount';
+import Cookies from "js-cookie";
 
 export default function Login() {
     const [username, setUsername] = useState("");
@@ -38,11 +39,9 @@ export default function Login() {
 
         const res = await getAccount({username, password});
         console.log(res);
-        if(res){
-            router.push({
-                pathname: "/",
-                query: {username: username}
-            });
+        if(res != null){
+            Cookies.set("signedInID", res);
+            router.push("/");
         }
         else {
             setOpen(true);
