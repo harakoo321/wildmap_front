@@ -4,12 +4,13 @@ import { getContribution } from './api/getContribution';
 import { useRouter } from 'next/router';
 import React, { useState, useInsertionEffect } from 'react';
 import { styled } from '@mui/material/styles';
-import { Fab, AppBar, Toolbar, IconButton, Box, Typography } from '@mui/material';
+import { Fab, AppBar, Toolbar, IconButton, Box, Typography, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
 import Contribution from '@/components/showContribution';
+import Cookies from 'js-cookie';
 
 export default function Home() {
   const router = useRouter();
@@ -63,7 +64,12 @@ export default function Home() {
         console.log('Geolocation is not supported by this browser.');
       }
       console.log(center);
-  }, [])
+  }, []);
+
+  const logout = () => {
+    Cookies.remove("signedInID");
+    console.log("logout: " + Cookies.get("signedInID"));
+  }
 
   if(center === null){
     return <p>位置情報を取得中...</p>;
@@ -98,9 +104,12 @@ export default function Home() {
                 <IconButton color="inherit">
                   <SearchIcon />
                 </IconButton>
-                <IconButton color="inherit">
-                  <MoreIcon />
-                </IconButton>
+                <Button
+                  color="error" 
+                  variant="outlined" 
+                  onClick={logout}>
+                  ログアウト
+                </Button>
               </Toolbar>
             </AppBar>
           </React.Fragment>
