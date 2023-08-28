@@ -35,7 +35,9 @@ export default function Contribution(props) {
                     <tr><th>写真</th><td>{}</td></tr>
                 </tbody>
             </table>
-            <Image src={docSnap.data().imagePath} layout="fill" objectFit="contain" alt="Image" />
+            <div style={{position: "relative", width: "100%", height: 150}}>
+                <Image src={docSnap.data().imagePath} layout="fill" objectFit="contain" alt="Image" />
+            </div>
         </div>
     )
 }
